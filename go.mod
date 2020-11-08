@@ -1,0 +1,1 @@
+module "github.com/11golubin/unitpay-go"
