@@ -14,7 +14,6 @@ import (
 var SecretKey string
 var PublicKey string
 
-
 /*
 Init unitpay with secret key, public key and default values.
 */
@@ -82,7 +81,7 @@ func checkLocaleValue(value string) bool {
 
 /*
 Form
- */
+*/
 // Type of default values for form
 type DefaultValues struct {
 	defaultCurrency string
@@ -90,6 +89,7 @@ type DefaultValues struct {
 	defaultBackUrl string
 	defaultPayBaseUrl string
 	defaultPaymentMethod string
+	defaultHideMenu string
 }
 
 // Preset default values for form
@@ -99,6 +99,7 @@ var defaultValues = DefaultValues{
 	defaultBackUrl:    "",
 	defaultPayBaseUrl: "https://unitpay.money/pay/",
 	defaultPaymentMethod: "card",
+	defaultHideMenu: "true",
 }
 
 // Functions to change some of default values for form
@@ -133,6 +134,10 @@ func SetDefaultPaymentMethod(paymentmethod string) error  {
 	defaultValues.defaultPaymentMethod = paymentmethod
 	return nil
 }
+// Functions to change some of default values for form
+func SetDefaultHideMenu(defaulthidemenu bool)  {
+	defaultValues.defaultHideMenu = strconv.FormatBool(defaulthidemenu)
+}
 
 
 
@@ -166,6 +171,7 @@ type OptionalParams struct {
 	Locale string `json:"locale"`
 	BackUrl string `json:"backUrl"`
 	PaymentMethod string `json:"payment_method"`
+	HideMenu string `json:"hide_menu"`
 }
 
 // Params options summary
@@ -192,7 +198,7 @@ func (params *Params) SetAccount(account string) error  {
 	if account == "" {
 		return errors.New("account must be not null")
 	}
-	params.Desc = account
+	params.Account = account
 	return nil
 }
 // Group of functions to set Form params values
@@ -211,6 +217,21 @@ func (params *Params) SetBackUrl(backurl string) error  {
 	return nil
 }
 
+// Group of functions to set Form params values
+func (params *Params) SetPaymentMethod(paymentmethod string) error  {
+	if !checkPaymentMethodsValue(paymentmethod) {
+		return errors.New("this payment method is not allowed, check allowed values in docs")
+	}
+	params.PaymentMethod = paymentmethod
+	return nil
+}
+
+// Group of functions to set Form params values
+func (params *Params) SetHideMenu(hidemenu bool) error  {
+	params.HideMenu = strconv.FormatBool(hidemenu)
+	return nil
+}
+
 // Return new params object with given required params and default optional params
 func NewParams(sum int, account string, desc string) *Params {
 	return &Params{
@@ -224,6 +245,7 @@ func NewParams(sum int, account string, desc string) *Params {
 			Locale:   defaultValues.defaultLocale,
 			BackUrl:  defaultValues.defaultBackUrl,
 			PaymentMethod: defaultValues.defaultPaymentMethod,
+			HideMenu: defaultValues.defaultHideMenu,
 		},
 	}
 }
@@ -236,6 +258,7 @@ func NewEmptyParams() *Params {
 			Locale:   defaultValues.defaultLocale,
 			BackUrl:  defaultValues.defaultBackUrl,
 			PaymentMethod: defaultValues.defaultPaymentMethod,
+			HideMenu: defaultValues.defaultHideMenu,
 		},
 	}
 }
@@ -305,6 +328,10 @@ func (params *Params) Form() (URL string, err error)  {
 	if params.OptionalParams.Currency != "" {
 		query.Add("currency", params.OptionalParams.Currency )
 	}
+	if params.OptionalParams.HideMenu != "" {
+		query.Add("hideMenu", params.OptionalParams.HideMenu )
+	}
+
 
 	query.Add("signature", signature)
 
@@ -315,11 +342,12 @@ func (params *Params) Form() (URL string, err error)  {
 
 /*
 Form end
- */
+*/
+
 
 /*
 Handler Request
- */
+*/
 // All Request values from UnitpayDocs
 type HandlerRequest struct {
 	Method string `json:"method"`
