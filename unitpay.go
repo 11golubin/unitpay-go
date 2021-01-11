@@ -171,6 +171,7 @@ type OptionalParams struct {
 	Locale string `json:"locale"`
 	BackUrl string `json:"backUrl"`
 	PaymentMethod string `json:"payment_method"`
+	Operator string `json:"operator"`
 	HideMenu string `json:"hide_menu"`
 }
 
@@ -229,6 +230,11 @@ func (params *Params) SetPaymentMethod(paymentmethod string) error  {
 // Group of functions to set Form params values
 func (params *Params) SetHideMenu(hidemenu bool) error  {
 	params.HideMenu = strconv.FormatBool(hidemenu)
+	return nil
+}
+
+func (params *Params) SetOperator(operator string) error  {
+	params.Operator = operator
 	return nil
 }
 
@@ -330,6 +336,9 @@ func (params *Params) Form() (URL string, err error)  {
 	}
 	if params.OptionalParams.HideMenu != "" {
 		query.Add("hideMenu", params.OptionalParams.HideMenu )
+	}
+	if params.OptionalParams.Operator != "" {
+		query.Add("operator", params.OptionalParams.Operator )
 	}
 
 
