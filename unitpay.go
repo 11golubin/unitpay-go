@@ -27,7 +27,7 @@ var currencyValues = [34]string{"RUB","EUR","USD","AUD", "AZN", "AMD", "BYN", "B
 // Allowed values for Optional Param locale
 var localeValues = [2]string{"ru", "en"}
 // Allowed values for Optional Param paymentMethods
-var paymentMethodsValues = []string{"mc","card","webmoney","webmoneyWmr","yandex","qiwi","paypal","alfaClick","applepay","samsungpay"}
+var paymentMethodsValues = []string{"mc","card","webmoney","webmoneyWmr","yandex","qiwi","paypal","alfaClick","applepay","samsungpay","googlepay"}
 // Allowed methods
 var allowedMethods = [3]string{"check","pay","error"}
 // TrustedUnitpayIps list
