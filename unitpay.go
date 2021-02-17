@@ -124,7 +124,7 @@ func SetDefaultBackUrl(backurl string)  {
 }
 // Functions to change some of default values for form
 func SetDefaultPayBaseUrl(defaultpaybaseurl string)  {
-	defaultValues.defaultCurrency = defaultpaybaseurl
+	defaultValues.defaultPayBaseUrl = defaultpaybaseurl
 }
 // Functions to change some of default values for form
 func SetDefaultPaymentMethod(paymentmethod string) error  {
