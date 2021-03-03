@@ -1,4 +1,4 @@
-package unitpay
+package main
 
 import (
 	"crypto/sha256"
@@ -9,6 +9,19 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+)
+
+package unitpay
+
+import (
+"crypto/sha256"
+"encoding/hex"
+"errors"
+"fmt"
+"net/http"
+"sort"
+"strconv"
+"strings"
 )
 
 var SecretKey string
@@ -90,6 +103,9 @@ type DefaultValues struct {
 	defaultPayBaseUrl string
 	defaultPaymentMethod string
 	defaultHideMenu string
+	defaultCustomerPhone string
+	defaultCustomerEmail string
+	defaultCashItems string
 }
 
 // Preset default values for form
@@ -100,6 +116,9 @@ var defaultValues = DefaultValues{
 	defaultPayBaseUrl: "https://unitpay.money/pay/",
 	defaultPaymentMethod: "card",
 	defaultHideMenu: "true",
+	defaultCustomerPhone: "",
+	defaultCustomerEmail: "",
+	defaultCashItems: "",
 }
 
 // Functions to change some of default values for form
@@ -173,6 +192,9 @@ type OptionalParams struct {
 	PaymentMethod string `json:"payment_method"`
 	Operator string `json:"operator"`
 	HideMenu string `json:"hide_menu"`
+	CustomerEmail string `json:"customer_email"`
+	CustomerPhone string `json:"customer_phone"`
+	CashItems string `json:"cash_items"`
 }
 
 // Params options summary
@@ -238,6 +260,21 @@ func (params *Params) SetOperator(operator string) error  {
 	return nil
 }
 
+func (params *Params) SetCustomerEmail(email string) error  {
+	params.CustomerEmail = email
+	return nil
+}
+
+func (params *Params) SetCustomerPhone(phone string) error  {
+	params.CustomerPhone = phone
+	return nil
+}
+
+func (params *Params) SetCashItems(items string) error  {
+	params.CashItems = items
+	return nil
+}
+
 // Return new params object with given required params and default optional params
 func NewParams(sum int, account string, desc string) *Params {
 	return &Params{
@@ -252,6 +289,9 @@ func NewParams(sum int, account string, desc string) *Params {
 			BackUrl:  defaultValues.defaultBackUrl,
 			PaymentMethod: defaultValues.defaultPaymentMethod,
 			HideMenu: defaultValues.defaultHideMenu,
+			CustomerPhone: defaultValues.defaultCustomerPhone,
+			CustomerEmail: defaultValues.defaultCustomerEmail,
+			CashItems: defaultValues.defaultCashItems,
 		},
 	}
 }
@@ -265,6 +305,9 @@ func NewEmptyParams() *Params {
 			BackUrl:  defaultValues.defaultBackUrl,
 			PaymentMethod: defaultValues.defaultPaymentMethod,
 			HideMenu: defaultValues.defaultHideMenu,
+			CustomerPhone: defaultValues.defaultCustomerPhone,
+			CustomerEmail: defaultValues.defaultCustomerEmail,
+			CashItems: defaultValues.defaultCashItems,
 		},
 	}
 }
@@ -339,6 +382,15 @@ func (params *Params) Form() (URL string, err error)  {
 	}
 	if params.OptionalParams.Operator != "" {
 		query.Add("operator", params.OptionalParams.Operator )
+	}
+	if params.OptionalParams.CustomerPhone != "" {
+		query.Add("customerPhone", params.OptionalParams.CustomerPhone )
+	}
+	if params.OptionalParams.CustomerEmail != "" {
+		query.Add("customerEmail", params.OptionalParams.CustomerEmail )
+	}
+	if params.OptionalParams.CashItems != "" {
+		query.Add("cashItems", params.OptionalParams.CashItems)
 	}
 
 
@@ -530,3 +582,4 @@ func HandleRequestWithParams(hr *HandlerRequest) error {
 
 	return nil
 }
+
