@@ -1,16 +1,3 @@
-package main
-
-import (
-	"crypto/sha256"
-	"encoding/hex"
-	"errors"
-	"fmt"
-	"net/http"
-	"sort"
-	"strconv"
-	"strings"
-)
-
 package unitpay
 
 import (
